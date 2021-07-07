@@ -4,9 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTasksTable extends Migration
+class CreateTaskCategoriesTable extends Migration
 {
-    private $tableName='tasks';
+    private $tableName='task_categories';
     /**
      * Run the migrations.
      *
@@ -17,7 +17,10 @@ class CreateTasksTable extends Migration
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('name_task',191)->nullable();
+            $table->integer('task_id')->unsigned()->index();
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->integer('categories_id')->unsigned()->index();
+            $table->foreign('categories_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
         });
     }

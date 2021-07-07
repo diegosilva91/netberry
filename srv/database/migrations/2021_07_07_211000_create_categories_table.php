@@ -4,9 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTasksTable extends Migration
+class CreateCategoriesTable extends Migration
 {
-    private $tableName='tasks';
+    private $tableName='categories';
     /**
      * Run the migrations.
      *
@@ -17,7 +17,7 @@ class CreateTasksTable extends Migration
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('name_task',191)->nullable();
+            $table->string('category_name',191)->nullable();
             $table->timestamps();
         });
     }
