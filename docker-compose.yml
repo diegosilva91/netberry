@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  base-php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    volumes:
+      - ./srv:/var/www/html
+    networks:
+      - base
+networks:
+  base:
