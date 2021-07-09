@@ -3,9 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Task extends Model
 {
     //
-    protected $fillable=[''];
+    protected $fillable = ['name_task'];
+
+    public function categoriesNames(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Categories::class, TaskCategories::class, 'task_id', 'id', 'id', 'id'
+        );
+    }
+    public function categoriesTask(){
+        return $this->hasMany(TaskCategories::class,'task_id');
+    }
 }
