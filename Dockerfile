@@ -52,6 +52,7 @@ ADD ./srv /var/www/html
 #RUN echo "NPM: " && npm -v
 #RUN npm install && npm run prod
 #change ownership of our applications
+RUN php artisan migrate --seed
 RUN chown -R www-data:www-data $APP_HOME
 
 #update apache port at runtime for Heroku
