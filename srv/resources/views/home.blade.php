@@ -26,7 +26,11 @@
         dataType: "json",
         success: function (data){
             populateData(data)
+            MessageUser('success','<p class="alert alert-success">Task loaded successfully</p>')
         }
+    }).fail(function (xhr, status, error) {
+        MessageUser('errors','<p class="alert alert-danger">Task cannot loaded</p>')
+        alert(`Oh noes! The AJAX request failed! ${error}`);
     });
     function populateData(data) {
         console.log(data)

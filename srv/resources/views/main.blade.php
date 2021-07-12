@@ -34,7 +34,7 @@
     <div class="mt-4 container">
         <h1>Gestor de tareas</h1>
         <hr class="my-12">
-        <div class="d-none alert alert-success" id="success">
+        <div class="alert" id="success">
         </div>
         <form class="row gy-2 gx-3 align-items-center" id="form">
             <div class="col-6">
@@ -104,8 +104,11 @@
                     },
                     success: function (resp) {
                         populateData(resp)
-                        MessageUser('success','<p>Task created successfully</p>')
+                        MessageUser('success','<p class="alert alert-success">Task created successfully</p>')
                     }
+                }).fail(function (xhr, status, error) {
+                    MessageUser('errors','<p class="alert alert-danger">Task cannot created</p>')
+                    alert(`Oh noes! The AJAX request failed! ${error}`);
                 });
 
             }
@@ -113,14 +116,14 @@
     });
     const MessageUser = function (id,msgHtml) {
         let $Msg = $(`#${id}`);
-        $Msg.toggleClass('d-none');
+        $Msg.attr("style","");
         $Msg.html(msgHtml)
         setTimeout(function () {
-            $Msg.toggleClass('d-none');
             $Msg.html('')
-        }, 20000);
+        }, 5000);
     }
     const deleteItem=function (e) {
+        $(e).parents('tr').addClass('table-success');
         let id = $(e).attr("id");
         console.log(e, id);
         $.ajax({
@@ -128,19 +131,25 @@
             type: 'DELETE',
             data: {
                 '_token': '{{ csrf_token() }}',
-                'task': $('#task').val(),
             },
             success: function (resp) {
                 if (resp.message) {
-
+                    MessageUser('success','<p class="alert alert-success">Task delete successfully</p>')
                     $(e).parents('tr').remove();
                 } else if (resp.error) {
+                    $(e).parents('tr').removeClass('table-success');
+                    $(e).parents('tr').addClass('table-danger');
                     alert(`Oh noes! ${resp.error}`);
                 } else {
+                    $(e).parents('tr').removeClass('table-success');
+                    $(e).parents('tr').addClass('table-danger');
                     alert(`Oh noes! error`);
                 }
             }
         }).fail(function (xhr, status, error) {
+            $(e).parents('tr').removeClass('table-success');
+            $(e).parents('tr').addClass('table-danger');
+            MessageUser('errors','<p class="alert alert-danger">Task cannot deleted</p>')
             alert(`Oh noes! The AJAX request failed! ${error}`);
         });
     }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Task;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
@@ -26,14 +28,26 @@ class TaskController extends Controller
                 ->createMany($array_mass_assign);
         }
 //        dd($request, $categories, $task, $new_task,$new_task->categoriesTask());
-        return Task::with('categoriesNames')->get();
+        if(isset($new_task)){
+            $tasks=Task::with('categoriesNames')->get();
+            return response()->json($tasks, Response::HTTP_ACCEPTED);
+        }else{
+            return response()->json( ['error'=>'task cannot saved'],Response::HTTP_INTERNAL_SERVER_ERROR );
+        }
     }
 
-    public function index()
+    /**
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
     {
-        $task=Task::with('categoriesNames')->get();
-        return $task;
-//        return response()->json(['task'=>$task]);
+        try {
+            $tasks=Task::with('categoriesNames')->get();
+            return response()->json($tasks, Response::HTTP_ACCEPTED);
+        }
+        catch(\Exception $exception){
+            return response()->json( ['error'=>$exception->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR );
+        }
     }
 
     /**
@@ -44,7 +58,6 @@ class TaskController extends Controller
     {
         $task=Task::destroy($id);
         if($task===1){
-            $tasks=Task::with('categoriesNames')->get();
             return response()->json( ['message'=>'Task deleted'],Response::HTTP_ACCEPTED );
         }
         return response()->json( ['error'=>'Task not found'],Response::HTTP_NOT_FOUND );
